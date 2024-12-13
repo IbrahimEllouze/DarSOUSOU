@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - tp6</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+<div class="hero">
+    <div>
+        <h1>Bienvenue sur tp6</h1>
+        <p>Gérez efficacement vos patients, médecins, et spécialités depuis une seule plateforme.</p>
+    </div>
+</div>
+
+<div class="container quick-actions">
+    <h2 class="text-center mb-4">Actions Rapides</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <a routerLink="/patients" class="text-decoration-none">
+                <div class="card p-3">
+                    <h5 class="card-title">Liste des Patients</h5>
+                    <p class="card-text">Consultez la liste des patients enregistrés.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a routerLink="/add" class="text-decoration-none">
+                <div class="card p-3">
+                    <h5 class="card-title">Ajouter un Patient</h5>
+                    <p class="card-text">Enregistrez un nouveau patient rapidement.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a routerLink="/medecins" class="text-decoration-none">
+                <div class="card p-3">
+                    <h5 class="card-title">Liste des Médecins</h5>
+                    <p class="card-text">Consultez les informations sur les médecins.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mt-3">
+            <a routerLink="/medecin-add" class="text-decoration-none">
+                <div class="card p-3">
+                    <h5 class="card-title">Ajouter un Médecin</h5>
+                    <p class="card-text">Ajoutez un nouveau médecin à votre base.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mt-3">
+            <a routerLink="/specialities" class="text-decoration-none">
+                <div class="card p-3">
+                    <h5 class="card-title">Liste des Spécialités</h5>
+                    <p class="card-text">Découvrez les spécialités disponibles.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mt-3">
+            <a routerLink="/specialities-add" class="text-decoration-none">
+                <div class="card p-3">
+                    <h5 class="card-title">Ajouter une Spécialité</h5>
+                    <p class="card-text">Ajoutez une nouvelle spécialité médicale.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

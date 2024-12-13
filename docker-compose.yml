@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: ./dari
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./angular-16-client
+    ports:
+      - "4200:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
