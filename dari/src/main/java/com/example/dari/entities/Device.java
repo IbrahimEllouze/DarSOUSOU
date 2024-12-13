@@ -2,7 +2,9 @@ package com.example.dari.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.beans.Transient;
 import java.time.Duration;
@@ -17,6 +19,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Getter 
+@Setter
 public class Device {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,4 +55,5 @@ public class Device {
         }
         return 0.0;
     }
+
 }
