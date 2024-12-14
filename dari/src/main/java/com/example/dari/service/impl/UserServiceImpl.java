@@ -7,6 +7,7 @@ import com.example.dari.entities.User;
 import com.example.dari.repository.UserRepository;
 import com.example.dari.service.inter.IUserService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -63,12 +64,14 @@ public class UserServiceImpl implements IUserService {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new IllegalArgumentException("Username already exists");
         }
+        // Additional checks (e.g., email format) can be added here
         return userRepository.save(user);
     }
 
     @Override
     public User authenticateUser(User user) {
-        Optional<User> optionalUser = userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
-        return optionalUser.orElse(null);
+        return userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword())
+                             .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
     }
+
 }
