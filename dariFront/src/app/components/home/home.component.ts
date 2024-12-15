@@ -15,7 +15,9 @@ export class HomeComponent implements OnInit {
   home: Home | null = null;
   errorMessage: string | null = null;
   isEditingHomeName: boolean = false;
-
+ // For adding a new room
+ isAddingRoom: boolean = false;
+ newRoomName: string = '';
   constructor(private homeService: HomeService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
@@ -57,11 +59,11 @@ export class HomeComponent implements OnInit {
   }
 
   removeRoom(roomId: number): void {
-    const userId = this.home?.id;
-    if (userId) {
-      this.homeService.removeRoom(userId, roomId).subscribe({
+    const homeId = this.home?.id;
+    if (homeId) {
+      this.homeService.removeRoom(homeId, roomId).subscribe({
         next: () => {
-          this.home!.rooms = this.home!.rooms.filter(room => room.id !== roomId);
+          this.home!.rooms = this.home!.rooms.filter(room => room.id !== roomId);  // Remove the room from the list
         },
         error: (error) => {
           this.errorMessage = 'Failed to remove the room.';
@@ -70,27 +72,58 @@ export class HomeComponent implements OnInit {
       });
     }
   }
-
+  
+  
   editRoomName(room: Room): void {
     if (room.isEditingName) {
       this.homeService.updateRoomName(this.home!.id!, room.id, room.newRoomName!).subscribe({
-        next: (updatedRoom) => {
+        next: (updatedRoom: Room) => {
+          // Find the room by ID and update its properties
           const roomIndex = this.home!.rooms.findIndex(r => r.id === room.id);
           if (roomIndex !== -1) {
-            this.home!.rooms[roomIndex] = updatedRoom;
+            this.home!.rooms[roomIndex] = updatedRoom; // Update the entire room object
             room.isEditingName = false; // Reset editing state
           }
         },
         error: (error) => {
           this.errorMessage = 'Failed to update room name.';
           console.error(error);
-        }
+        },
       });
     } else {
       room.isEditingName = true;
       room.newRoomName = room.name; // Initialize the new room name with the current name
     }
   }
+  addNewRoom(): void {
+    this.isAddingRoom = true;
+    this.newRoomName = '';
+  }
+
+  saveNewRoom(): void {
+    if (this.newRoomName.trim() && this.home) {
+      const newRoom: Partial<Room> = { name: this.newRoomName }; // Use Partial to avoid temporary ID issues
+      this.homeService.addRoomToHome(this.home.id!, newRoom).subscribe({
+        next: (createdRoom) => {
+          this.home!.rooms.push(createdRoom); // Add the room to the list
+          this.isAddingRoom = false;
+        },
+        error: (error) => {
+          this.errorMessage = 'Failed to add the room.';
+          console.error(error);
+        },
+      });
+    }
+  }
+  
+
+  cancelAddingRoom(): void {
+    this.isAddingRoom = false;
+    this.newRoomName = '';
+  }
+  
+
+
 
   enterRoom(roomId: number): void {
     this.router.navigate([`/rooms/${roomId}`]); // Navigate to room detail page

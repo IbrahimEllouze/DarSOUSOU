@@ -39,6 +39,21 @@ public class HomeController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
+    @DeleteMapping("/user/{userId}/rooms/{roomId}")
+    public ResponseEntity<Void> removeRoom(@PathVariable Long userId, @PathVariable Long roomId) {
+        try {
+            boolean isDeleted = roomService.deleteRoom(userId, roomId);  // Call the correct service method
+            if (isDeleted) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                // Room successfully deleted
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Room not found for user
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @PostMapping("/user/{userId}")
     public ResponseEntity<Home> updateUserHome(@PathVariable Long userId, @RequestBody String homeName) {

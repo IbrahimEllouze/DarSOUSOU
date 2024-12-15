@@ -102,4 +102,14 @@ public class RoomServiceImpl implements IRoomService {
             throw new IllegalArgumentException("Room not found for user " + userId + " and roomId " + roomId);
         }
     }
+    @Override
+    public boolean deleteRoom(Long userId, Long roomId) {
+        Optional<Room> roomOptional = roomRepository.findByIdAndHome_UserId(roomId, userId);
+        if (roomOptional.isPresent()) {
+            roomRepository.delete(roomOptional.get());
+            return true;
+        }
+        return false;
+    }
+
 }

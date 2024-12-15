@@ -5,29 +5,71 @@
   <title>Home - DaRi</title>
   <link rel="stylesheet" href="home.component.css">
 </head>
-<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
-
-<div *ngIf="home" class="home-container">
-  <h2>Home: {{ home.name }}</h2>
-  
-  <button (click)="toggleEditingHomeName()">
-    {{ isEditingHomeName ? 'Cancel' : 'Edit Home Name' }}
-  </button>
-  
-  <div *ngIf="isEditingHomeName">
-    <input [(ngModel)]="home.name" (blur)="updateHomeName()" />
-  </div>
-
-  <h3>Rooms</h3>
-  <ul>
-    <li *ngFor="let room of home.rooms">
-      <span *ngIf="!room.isEditingName">{{ room.name }}</span>
-      <input *ngIf="room.isEditingName" [(ngModel)]="room.newRoomName" />
-      <button (click)="editRoomName(room)">
-        {{ room.isEditingName ? 'Save' : 'Edit' }}
+<body>
+  <nav *ngIf="home" class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">{{ home.name }}</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
       </button>
-      <button (click)="removeRoom(room.id)">Remove</button>
-    </li>
-  </ul>
-</div>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Connected Devices</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Store</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <div *ngIf="home" class="home-container">
+    
+    <h2>
+      Home: {{ home.name }}
+      <button (click)="toggleEditingHomeName()">
+        {{ isEditingHomeName ? 'Cancel' : 'Edit Home Name' }}
+      </button>
+    </h2>
+    
+    <div *ngIf="isEditingHomeName" class="edit-home-name">
+      <input [(ngModel)]="home.name" placeholder="Enter new home name" />
+      <button (click)="updateHomeName()">Save</button>
+      <button (click)="toggleEditingHomeName()">Cancel</button>
+    </div>
+
+    <h3>Rooms</h3>
+    <ul>
+      <li *ngFor="let room of home.rooms" class="room-item">
+        <span *ngIf="!room.isEditingName">{{ room.name }}</span>
+        <input *ngIf="room.isEditingName" [(ngModel)]="room.newRoomName" placeholder="Enter new room name" />
+        
+        <button (click)="editRoomName(room)">
+          {{ room.isEditingName ? 'Save' : 'Edit' }}
+        </button>
+        <button (click)="removeRoom(room.id)">Remove</button>
+        <button (click)="enterRoom(room.id)">Enter </button>
+      </li>
+    </ul>
+
+    <div class="add-room-section">
+      <button *ngIf="!isAddingRoom" (click)="addNewRoom()">Add New Room</button>
+      <div *ngIf="isAddingRoom">
+        <input [(ngModel)]="newRoomName" placeholder="New room name" />
+        <button (click)="saveNewRoom()">Save</button>
+        <button (click)="cancelAddingRoom()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</body>
 </html>

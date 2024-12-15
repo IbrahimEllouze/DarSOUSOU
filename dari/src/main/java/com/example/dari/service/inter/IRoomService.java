@@ -25,6 +25,8 @@ public interface IRoomService {
 
 	Room getRoomById(Long roomId);
 
-	List<Room> getRoomsByUser(Long userId); 
+	List<Room> getRoomsByUser(Long userId);
+
+	boolean deleteRoom(Long userId, Long roomId); 
 }
 

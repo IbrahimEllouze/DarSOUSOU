@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Room - {{ room.name }}</title>
+  <link rel="stylesheet" href="room.component.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">DaRi</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Connected Devices</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Store</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <div class="room-container">
+    <h2>
+      Room: {{ room.name }}
+      <button (click)="toggleEditingRoomName()">
+        {{ isEditingRoomName ? 'Cancel' : 'Edit Room Name' }}
+      </button>
+    </h2>
+
+    <div *ngIf="isEditingRoomName" class="edit-room-name">
+      <input [(ngModel)]="room.newRoomName" placeholder="Enter new room name" />
+      <button (click)="updateRoomName()">Save</button>
+      <button (click)="toggleEditingRoomName()">Cancel</button>
+    </div>
+
+    <h3>Devices</h3>
+    <ul>
+      <li *ngFor="let device of room.devices" class="device-item">
+        <div *ngIf="!device.isEditingName">
+          <span>{{ device.name }}</span>
+          <span *ngIf="device.active">
+            <label class="switch">
+              <input type="checkbox" [checked]="device.active" (change)="toggleDeviceActive(device)" />
+              <span class="slider round"></span>
+            </label>
+          </span>
+          <button (click)="editDeviceName(device)">
+            {{ device.isEditingName ? 'Save' : 'Edit Name' }}
+          </button>
+          <button (click)="removeDevice(device.id)">Remove</button>
+        </div>
+
+        <input *ngIf="device.isEditingName" [(ngModel)]="device.name" placeholder="Enter new device name" />
+      </li>
+    </ul>
+
+    
+  </div>
+</body>
+</html>
