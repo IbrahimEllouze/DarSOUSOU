@@ -19,12 +19,18 @@ export class LoginComponent {
     if (this.user.username && this.user.password) {
       this.authService.login(this.user).subscribe(
         (response) => {
+          // Navigate on successful login
           this.router.navigate([`/homes/${response.id}/rooms`]);
         },
         (error) => {
+          // Set error message on failure
           this.errorMessage = 'Invalid username or password.';
         }
       );
+    } else {
+      // Handle empty username or password fields
+      this.errorMessage = 'Please fill in all fields.';
     }
   }
+  
 }
