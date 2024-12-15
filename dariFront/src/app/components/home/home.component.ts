@@ -126,7 +126,7 @@ export class HomeComponent implements OnInit {
 
 
   enterRoom(roomId: number): void {
-    this.router.navigate([`/rooms/${roomId}`]); // Navigate to room detail page
+    this.router.navigate([`/${roomId}/devices`]); // Navigate to room detail page
   }
 
   toggleRoomEdit(room: Room): void {

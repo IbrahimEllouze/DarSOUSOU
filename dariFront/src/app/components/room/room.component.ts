@@ -5,16 +5,17 @@ import { Home, Room, Device } from '../../models/home.model';
 
 @Component({
   selector: 'app-room',
+  standalone: false,
   templateUrl: './room.component.html',
   styleUrls: ['./room.component.css']
 })
 export class RoomComponent implements OnInit {
-  homeId: number;
-  room: Room;
+  homeId: number = 0; // Initialize with default value
+  room: Room = {} as Room; // Initialize with an empty object of type Room
   isEditingRoomName = false;
   isAddingDevice = false;
-  newDeviceName: string;
-  errorMessage: string;
+  newDeviceName: string = ''; // Initialize with default empty string
+  errorMessage: string = ''; // Initialize with default empty string
 
   constructor(
     private route: ActivatedRoute,
@@ -23,17 +24,17 @@ export class RoomComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.homeId = +this.route.snapshot.paramMap.get('homeId');
-    const roomId = +this.route.snapshot.paramMap.get('roomId');
+    this.homeId = +this.route.snapshot.paramMap.get('homeId')!;
+    const roomId = +this.route.snapshot.paramMap.get('roomId')!;
     this.getRoomDetails(this.homeId, roomId);
   }
 
   getRoomDetails(homeId: number, roomId: number): void {
-    this.homeService.getRoomById(homeId, roomId).subscribe(
+    this.homeService.getRoomById( roomId).subscribe(
       (room: Room) => {
         this.room = room;
       },
-      (error) => {
+      (error: any) => {
         this.errorMessage = 'Error fetching room details';
       }
     );
@@ -50,7 +51,7 @@ export class RoomComponent implements OnInit {
           this.room = updatedRoom;
           this.isEditingRoomName = false;
         },
-        (error) => {
+        (error: any) => {
           this.errorMessage = 'Error updating room name';
         }
       );
@@ -58,14 +59,14 @@ export class RoomComponent implements OnInit {
   }
 
   editDeviceName(device: Device): void {
-    device.isEditingName = !device.isEditingName;
+    device.isEditingName = !device.isEditingName; // Ensure this property exists in the `Device` model
   }
 
   toggleDeviceActive(device: Device): void {
     device.active = !device.active; // Toggle active status
-    this.homeService.updateDeviceStatus(this.homeId, this.room.id, device.id, device).subscribe(
+    this.homeService.updateDeviceInRoom(this.homeId, this.room.id, device.id, device).subscribe(
       () => {},
-      (error) => {
+      (error: any) => {
         this.errorMessage = 'Error updating device status';
       }
     );
@@ -76,37 +77,10 @@ export class RoomComponent implements OnInit {
       () => {
         this.room.devices = this.room.devices.filter(d => d.id !== deviceId);
       },
-      (error) => {
+      (error: any) => {
         this.errorMessage = 'Error removing device';
       }
     );
-  }
-
-  addNewDevice(): void {
-    this.isAddingDevice = true;
-  }
-
-  saveNewDevice(): void {
-    if (this.newDeviceName) {
-      const newDevice: Device = {
-        id: Date.now(), // Generate a unique ID
-        name: this.newDeviceName,
-        energyRate: 0,
-        turnedOnAt: new Date().toISOString(),
-        active: true,
-        connected: true,
-      };
-      this.homeService.addDeviceToRoom(this.homeId, this.room.id, newDevice).subscribe(
-        (device) => {
-          this.room.devices.push(device);
-          this.isAddingDevice = false;
-          this.newDeviceName = '';
-        },
-        (error) => {
-          this.errorMessage = 'Error adding new device';
-        }
-      );
-    }
   }
 
   cancelAddingDevice(): void {

@@ -43,9 +43,16 @@ export class HomeService {
   toggleDeviceActive(homeId: number, roomId: number, deviceId: number, device: Device): Observable<void> {
     return this.http.put<void>(`${this.apiBaseUrl}/user/${homeId}/rooms/${roomId}/devices/${deviceId}`, device);
   }
-
+  
   removeDeviceFromRoom(homeId: number, roomId: number, deviceId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiBaseUrl}/user/${homeId}/rooms/${roomId}/devices/${deviceId}`);
   }
+  getRoomById(roomId: number): Observable<Room> {
+  return this.http.get<Room>(`${this.apiBaseUrl}/rooms/${roomId}`);
+}
+updateDeviceInRoom(homeId: number, roomId: number, deviceId: number, device: Device): Observable<Device> {
+  return this.http.put<Device>(`${this.apiBaseUrl}/user/${homeId}/rooms/${roomId}/devices/${deviceId}`, device);
+}
+
 
 }

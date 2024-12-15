@@ -19,5 +19,5 @@ export interface Home {
     turnedOnAt: string;
     active: boolean;
     connected: boolean;
+    isEditingName?: boolean; // Optional property
   }
-  
