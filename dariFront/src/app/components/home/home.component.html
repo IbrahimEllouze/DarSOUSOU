@@ -1,6 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Home - DaRi</title>
+  <link rel="stylesheet" href="home.component.css">
+</head>
 <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 
-<div *ngIf="home">
+<div *ngIf="home" class="home-container">
   <h2>Home: {{ home.name }}</h2>
   
   <button (click)="toggleEditingHomeName()">
@@ -23,3 +30,4 @@
     </li>
   </ul>
 </div>
+</html>
