@@ -1,0 +1,25 @@
+<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+<div *ngIf="home">
+  <h2>Home: {{ home.name }}</h2>
+  
+  <button (click)="toggleEditingHomeName()">
+    {{ isEditingHomeName ? 'Cancel' : 'Edit Home Name' }}
+  </button>
+  
+  <div *ngIf="isEditingHomeName">
+    <input [(ngModel)]="home.name" (blur)="updateHomeName()" />
+  </div>
+
+  <h3>Rooms</h3>
+  <ul>
+    <li *ngFor="let room of home.rooms">
+      <span *ngIf="!room.isEditingName">{{ room.name }}</span>
+      <input *ngIf="room.isEditingName" [(ngModel)]="room.newRoomName" />
+      <button (click)="editRoomName(room)">
+        {{ room.isEditingName ? 'Save' : 'Edit' }}
+      </button>
+      <button (click)="removeRoom(room.id)">Remove</button>
+    </li>
+  </ul>
+</div>

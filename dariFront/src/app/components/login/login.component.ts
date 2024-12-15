@@ -16,16 +16,15 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   login() {
-    this.authService.login(this.user).subscribe({
-      next: (response) => {
-        console.log('Login successful', response);
-        // Navigate to another page after successful login
-        this.router.navigate(['/dashboard']);
-      },
-      error: (error) => {
-        console.error('Login failed', error);
-        this.errorMessage = 'Invalid username or password';
-      }
-    });
+    if (this.user.username && this.user.password) {
+      this.authService.login(this.user).subscribe(
+        (response) => {
+          this.router.navigate([`/homes/${response.id}/rooms`]);
+        },
+        (error) => {
+          this.errorMessage = 'Invalid username or password.';
+        }
+      );
+    }
   }
 }

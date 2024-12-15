@@ -32,9 +32,11 @@ public class LoginController {
     public ResponseEntity<?> loginUser(@RequestBody User user) {
         try {
             User authenticatedUser = userService.authenticateUser(user);
-            return new ResponseEntity<>(authenticatedUser, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+            if (authenticatedUser != null) {
+                return new ResponseEntity<>(authenticatedUser, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
         }

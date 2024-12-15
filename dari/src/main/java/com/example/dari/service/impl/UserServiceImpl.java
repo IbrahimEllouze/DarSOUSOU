@@ -10,6 +10,7 @@ import com.example.dari.repository.UserRepository;
 import com.example.dari.service.inter.IUserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -71,9 +72,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User authenticateUser(User user) {
-        return userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
+    public User authenticateUser(User user) throws IllegalArgumentException {
+        Optional<User> optionalUser = userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
+            throw new IllegalArgumentException("Invalid credentials");
+        }
     }
 
     @Override
