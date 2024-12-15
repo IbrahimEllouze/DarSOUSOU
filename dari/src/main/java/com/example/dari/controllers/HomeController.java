@@ -5,8 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.dari.entities.Device;
 import com.example.dari.entities.Home;
-import com.example.dari.service.inter.IHomeService;
+import com.example.dari.entities.Room;
+import com.example.dari.service.impl.UserServiceImpl;
+import com.example.dari.service.inter.IDeviceService;
+import com.example.dari.service.inter.IRoomService;
 
 import java.util.List;
 
@@ -15,37 +19,44 @@ import java.util.List;
 @RequestMapping("/homes")
 public class HomeController {
 
-    @Autowired
-    private IHomeService homeService;
+    private final UserServiceImpl userService;
+    private final IRoomService roomService;
+    private final IDeviceService deviceService;
 
-    @PostMapping
-    public ResponseEntity<Home> saveHome(@RequestBody Home home) {
-        try {
-            Home savedHome = homeService.saveHome(home);
-            return new ResponseEntity<>(savedHome, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @Autowired
+    public HomeController(UserServiceImpl userService, IRoomService roomService, IDeviceService deviceService) {
+        this.userService = userService;
+        this.roomService = roomService;
+        this.deviceService = deviceService;
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Home> updateHome(@PathVariable Long id, @RequestBody Home home) {
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Home> getHomeByUser(@PathVariable Long userId) {
         try {
-            home.setId(id);
-            Home updatedHome = homeService.updateHome(home);
-            return new ResponseEntity<>(updatedHome, HttpStatus.OK);
+            Home home = userService.getUserHome(userId);
+            return new ResponseEntity<>(home, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteHome(@PathVariable Long id) {
+    @PostMapping("/user/{userId}")
+    public ResponseEntity<Home> updateUserHome(@PathVariable Long userId, @RequestBody String homeName) {
         try {
-            if (homeService.deleteHome(id)) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            Home updatedHome = userService.updateHomeForUser(userId, homeName);
+            return new ResponseEntity<>(updatedHome, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/user/{userId}/rooms")
+    public ResponseEntity<List<Room>> getRoomsByUser(@PathVariable Long userId) {
+        try {
+            Home home = userService.getUserHome(userId);
+            if (home != null) {
+                List<Room> rooms = home.getRooms();
+                return new ResponseEntity<>(rooms, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -54,49 +65,75 @@ public class HomeController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<Home>> getAllHomes() {
+    @PostMapping("/user/{userId}/rooms")
+    public ResponseEntity<Room> addRoomToHome(@PathVariable Long userId, @RequestBody Room room) {
         try {
-            List<Home> homes = homeService.getAllHomes();
-            return new ResponseEntity<>(homes, HttpStatus.OK);
+            Room createdRoom = roomService.addRoomToHome(userId, room);
+            return new ResponseEntity<>(createdRoom, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Home> getHomeById(@PathVariable Long id) {
+    @PutMapping("/user/{userId}/rooms/{roomId}")
+    public ResponseEntity<Room> updateRoomName(@PathVariable Long userId, @PathVariable Long roomId, @RequestBody String newRoomName) {
         try {
-            Home home = homeService.getHome(id);
-            return new ResponseEntity<>(home, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            Room updatedRoom = roomService.updateRoomName(userId, roomId, newRoomName);
+            return new ResponseEntity<>(updatedRoom, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/by-name/{name}")
-    public ResponseEntity<Home> findHomeByName(@PathVariable String name) {
+    @GetMapping("/user/{userId}/rooms/{roomId}/devices")
+    public ResponseEntity<List<Device>> getDevicesByRoomAndUser(
+            @PathVariable Long userId,
+            @PathVariable Long roomId) {
         try {
-            Home home = homeService.findHomeByName(name);
-            if (home != null) {
-                return new ResponseEntity<>(home, HttpStatus.OK);
+            List<Device> devices = deviceService.getDevicesByRoom(userId, roomId);
+            if (devices.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(devices, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/user/{userId}/rooms/{roomId}/devices/{deviceId}")
+    public ResponseEntity<Device> updateDeviceInRoom(
+            @PathVariable Long userId,
+            @PathVariable Long roomId,
+            @PathVariable Long deviceId,
+            @RequestBody Device deviceDetails) {
+        try {
+            Device updatedDevice = deviceService.updateDeviceInRoom(userId, roomId, deviceId, deviceDetails);
+            if (updatedDevice != null) {
+                return new ResponseEntity<>(updatedDevice, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/count")
-    public ResponseEntity<Integer> getQuantityOfHomes() {
+    @DeleteMapping("/user/{userId}/rooms/{roomId}/devices/{deviceId}")
+    public ResponseEntity<Void> removeDeviceFromRoom(
+            @PathVariable Long userId,
+            @PathVariable Long roomId,
+            @PathVariable Long deviceId) {
         try {
-            int quantity = homeService.getQuantityOfHomes();
-            return new ResponseEntity<>(quantity, HttpStatus.OK);
+            boolean isRemoved = deviceService.removeDeviceFromRoom(userId, roomId, deviceId);
+            if (isRemoved) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+   
+
 }

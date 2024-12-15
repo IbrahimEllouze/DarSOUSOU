@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 import com.example.dari.entities.Room;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
@@ -27,21 +29,15 @@ public class Device {
     private Long id;
 
     private String name; // e.g., "Smart Light"
-    
-    
-   
     private boolean isConnected; // true = Connected, false = Not Connected
-    
-    @JsonProperty("isActive")
-    private boolean isActive;// true = ON, false = OFF
-    
-    
-    private Double energyRate; // Energy consumed per minute (in kWh)
-    
 
+    private boolean isActive; // true = ON, false = OFF
+
+    private Double energyRate; // Energy consumed per minute (in kWh)
 
     @ManyToOne
-    @JoinColumn(name = "room_id", nullable = true) // Nullable for unassigned devices
+    @JoinColumn(name = "room_id", nullable = false)
+    @JsonBackReference // Prevents infinite loop by not serializing the room here
     private Room room;
 
     private LocalDateTime turnedOnAt; // Time when the device was turned ON
@@ -55,5 +51,4 @@ public class Device {
         }
         return 0.0;
     }
-
 }

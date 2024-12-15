@@ -12,8 +12,8 @@ import java.util.Optional;
 
 @Service
 public class DeviceServiceImpl implements IDeviceService {
-	
-	@Autowired
+    
+    @Autowired
     private final DeviceRepository deviceRepository;
 
     public DeviceServiceImpl(DeviceRepository deviceRepository) {
@@ -58,4 +58,42 @@ public class DeviceServiceImpl implements IDeviceService {
     public int getQuantityOfDevices() {
         return (int) deviceRepository.count();
     }
+
+    // Custom method to fetch connected devices
+    @Override
+    public List<Device> getConnectedDevices() {
+        return deviceRepository.findByIsConnected(true);
+    }
+    @Override
+    public Device updateDeviceInRoom(Long userId, Long roomId, Long deviceId, Device deviceDetails) {
+        Optional<Device> optionalDevice = deviceRepository.findById(deviceId);
+        if (optionalDevice.isPresent()) {
+            Device existingDevice = optionalDevice.get();
+            existingDevice.setName(deviceDetails.getName());
+            existingDevice.setActive(deviceDetails.isActive());
+            existingDevice.setEnergyRate(deviceDetails.getEnergyRate());
+            existingDevice.setConnected(deviceDetails.isConnected());
+            existingDevice.setTurnedOnAt(deviceDetails.getTurnedOnAt());
+            return deviceRepository.save(existingDevice);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean removeDeviceFromRoom(Long userId, Long roomId, Long deviceId) {
+        Optional<Device> optionalDevice = deviceRepository.findById(deviceId);
+        if (optionalDevice.isPresent()) {
+            deviceRepository.delete(optionalDevice.get());
+            return true;
+        }
+        return false;
+    }
+
+	@Override
+	public List<Device> getDevicesByRoom(Long userId, Long roomId) {
+		return deviceRepository.findByRoomId(roomId);
+	}
+
+    
+
 }

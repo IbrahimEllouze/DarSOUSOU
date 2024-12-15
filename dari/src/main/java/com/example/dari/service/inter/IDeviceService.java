@@ -20,4 +20,15 @@ public interface IDeviceService {
     Device findDeviceByName(String name);
 
     int getQuantityOfDevices();
+
+	List<Device> getConnectedDevices();
+
+	List<Device> getDevicesByRoom(Long userId, Long roomId);
+
+	Device updateDeviceInRoom(Long userId, Long roomId, Long deviceId, Device deviceDetails);
+
+	boolean removeDeviceFromRoom(Long userId, Long roomId, Long deviceId);
+
+	
+
 }

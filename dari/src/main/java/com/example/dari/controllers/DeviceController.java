@@ -12,72 +12,34 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/devices")
+@RequestMapping("/users/{userId}/devices")
 public class DeviceController {
 
     @Autowired
     private IDeviceService deviceService;
 
-    @PostMapping
-    public ResponseEntity<Device> saveDevice(@RequestBody Device device) {
+    /**
+     * Endpoint to add a device to a room if the room ID is not null.
+     */
+    @PostMapping("/add-device")
+    public ResponseEntity<Device> addDeviceToRoom(@PathVariable Long userId, @RequestBody Device device) {
         try {
-            Device savedDevice = deviceService.saveDevice(device);
-            return new ResponseEntity<>(savedDevice, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Device> updateDevice(@PathVariable Long id, @RequestBody Device device) {
-        try {
-            device.setId(id);
-            Device updatedDevice = deviceService.updateDevice(device);
-            return new ResponseEntity<>(updatedDevice, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDevice(@PathVariable Long id) {
-        try {
-            if (deviceService.deleteDevice(id)) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (device.getRoom() != null && device.getRoom().getId() != null) {
+                Device savedDevice = deviceService.saveDevice(device);
+                return new ResponseEntity<>(savedDevice, HttpStatus.CREATED);
             } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Device>> getAllDevices() {
-        try {
-            List<Device> devices = deviceService.getAllDevices();
-            return new ResponseEntity<>(devices, HttpStatus.OK);
-        } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Device> getDeviceById(@PathVariable Long id) {
-        try {
-            Device device = deviceService.getDevice(id);
-            return new ResponseEntity<>(device, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("/by-name/{name}")
-    public ResponseEntity<Device> findDeviceByName(@PathVariable String name) {
+    /**
+     * Endpoint to find a device by its name.
+     */
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Device> findDeviceByName(@PathVariable Long userId, @PathVariable String name) {
         try {
             Device device = deviceService.findDeviceByName(name);
             if (device != null) {
@@ -89,14 +51,16 @@ public class DeviceController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @GetMapping("/count")
-    public ResponseEntity<Integer> getQuantityOfDevices() {
+    @GetMapping("/connected")
+    public ResponseEntity<List<Device>> getConnectedDevices() {
         try {
-            int quantity = deviceService.getQuantityOfDevices();
-            return new ResponseEntity<>(quantity, HttpStatus.OK);
+            List<Device> connectedDevices = deviceService.getConnectedDevices();
+            return new ResponseEntity<>(connectedDevices, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
 }

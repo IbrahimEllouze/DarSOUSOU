@@ -20,5 +20,11 @@ public interface IRoomService {
     Room findRoomByName(String name);
 
     int getQuantityOfRooms();
+    Room addRoomToHome(Long userId, Room room); // Add this method
+    Room updateRoomName(Long userId, Long roomId, String newRoomName);
+
+	Room getRoomById(Long roomId);
+
+	List<Room> getRoomsByUser(Long userId); 
 }
 

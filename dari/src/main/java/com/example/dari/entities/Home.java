@@ -17,6 +17,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 @Getter 
 @Setter
@@ -32,10 +34,14 @@ public class Home {
     private String name; // e.g., "John's Home"
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JsonBackReference // Prevents infinite loop by not serializing the user here
     private User user;
 
     @OneToMany(mappedBy = "home", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // Allows proper serialization of rooms
     private List<Room> rooms;
-
 }
+
+
+

@@ -3,21 +3,24 @@ package com.example.dari.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.dari.entities.Home;
 import com.example.dari.entities.User;
+import com.example.dari.repository.HomeRepository;
 import com.example.dari.repository.UserRepository;
 import com.example.dari.service.inter.IUserService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements IUserService {
 
     private final UserRepository userRepository;
+    private final HomeRepository homeRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, HomeRepository homeRepository) {
         this.userRepository = userRepository;
+        this.homeRepository = homeRepository;
     }
 
     @Override
@@ -64,14 +67,32 @@ public class UserServiceImpl implements IUserService {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new IllegalArgumentException("Username already exists");
         }
-        // Additional checks (e.g., email format) can be added here
         return userRepository.save(user);
     }
 
     @Override
     public User authenticateUser(User user) {
         return userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword())
-                             .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
     }
 
+    @Override
+    public Home getUserHome(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return user.getHome();
+    }
+
+    public Home updateHomeForUser(Long userId, String homeName) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Home home = user.getHome();
+        if (home == null) {
+            home = new Home();
+            home.setUser(user);
+        }
+        home.setName(homeName);
+        return homeRepository.save(home);
+    }
 }

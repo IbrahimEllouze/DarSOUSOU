@@ -2,6 +2,7 @@ package com.example.dari.service.inter;
 
 import java.util.List;
 
+import com.example.dari.entities.Home;
 import com.example.dari.entities.User;
 
 public interface IUserService {
@@ -16,4 +17,6 @@ public interface IUserService {
     // Add methods for registration and authentication
     User registerUser(User user);
     User authenticateUser(User user);
+    
+    Home getUserHome(Long userId);
 }
