@@ -1,28 +1,40 @@
-<div *ngIf="room">
-    <h2>{{ room.name }}</h2>
-    <button (click)="toggleEditingRoomName()">
-      {{ isEditingRoomName ? 'Cancel' : 'Edit Room Name' }}
-    </button>
-  
-    <div *ngIf="isEditingRoomName">
-      <input [(ngModel)]="room.newRoomName" placeholder="Enter new room name" />
-      <button (click)="updateRoomName()">Save</button>
-      <button (click)="toggleEditingRoomName()">Cancel</button>
-    </div>
-  
-    <ul>
-      <li *ngFor="let device of room.devices">
-        <span>{{ device.name }}</span>
-        <input [(ngModel)]="device.name" (blur)="editDeviceName(device)" placeholder="Edit device name" />
-        <label>
-          <input type="checkbox" [(ngModel)]="device.active" (change)="toggleDeviceActive(device)" />
-          Active
-        </label>
-        <span *ngIf="!device.connected">Not Connected</span>
-        <button (click)="removeDevice(device.id)">Remove Device</button>
-      </li>
-    </ul>
-  </div>
-  
-  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
-  
+<div class="room-container">
+  <h1>{{ roomName }}</h1>
+
+  <div *ngIf="loading">Loading devices...</div>
+  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <table *ngIf="!loading && devices.length > 0">
+    <thead>
+      <tr>
+        <th>Device Name</th>
+        <th>Connected</th>
+        <th>Active</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let device of devices">
+        <td>
+          <input
+  type="text"
+  [(ngModel)]="device.name"
+  (ngModelChange)="updateDeviceName(device, device.name)"
+/>
+
+        </td>
+        <td>{{ device.connected ? 'Connected' : 'Not Connected' }}</td>
+        <td>
+          <button (click)="toggleDeviceActive(device)">
+            {{ device.active ? 'Turn Off' : 'Turn On' }}
+          </button>
+        </td>
+        <td>
+          <button (click)="removeDevice(device.id)">Remove</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && devices.length === 0">No devices found in this room.</div>
+</div>

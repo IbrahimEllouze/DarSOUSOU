@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Device, Home, Room } from '../models/home.model';
 
 @Injectable({
@@ -40,7 +40,12 @@ export class HomeService {
   
   // Fetch rooms by user ID
   getRoomsByUserId(userId: number): Observable<Room[]> {
-    return this.http.get<Room[]>(`${this.apiBaseUrl}/user/${userId}/rooms`);
+    return this.http.get<Room[]>(`${this.apiBaseUrl}/user/${userId}/rooms`).pipe(
+        map(rooms => rooms.map(room => {
+            // If you want to map room with its name directly.
+            return { ...room, name: room.name };
+        }))
+    );
   }
   toggleDeviceActive(homeId: number, roomId: number, deviceId: number, device: Device): Observable<void> {
     return this.http.put<void>(`${this.apiBaseUrl}/user/${homeId}/rooms/${roomId}/devices/${deviceId}`, device);
@@ -55,6 +60,24 @@ export class HomeService {
 updateDeviceInRoom(homeId: number, roomId: number, deviceId: number, device: Device): Observable<Device> {
   return this.http.put<Device>(`${this.apiBaseUrl}/user/${homeId}/rooms/${roomId}/devices/${deviceId}`, device);
 }
+// Fetch devices by room and user
+getDevicesByRoom(userId: number, roomId: number): Observable<Device[]> {
+  return this.http.get<Device[]>(`${this.apiBaseUrl}/user/${userId}/rooms/${roomId}/devices`);
+}
+
+// Update a device
+updateDevice(userId: number, roomId: number, deviceId: number, device: Device): Observable<Device> {
+  return this.http.put<Device>(
+    `${this.apiBaseUrl}/user/${userId}/rooms/${roomId}/devices/${deviceId}`,
+    device
+  );
+}
+
+// Remove a device from a room
+removeDevice(userId: number, roomId: number, deviceId: number): Observable<void> {
+  return this.http.delete<void>(`${this.apiBaseUrl}/user/${userId}/rooms/${roomId}/devices/${deviceId}`);
+}
+
 
 
 }
