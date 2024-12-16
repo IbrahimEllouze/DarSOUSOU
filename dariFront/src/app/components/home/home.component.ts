@@ -15,14 +15,15 @@ export class HomeComponent implements OnInit {
   home: Home | null = null;
   errorMessage: string | null = null;
   isEditingHomeName: boolean = false;
- // For adding a new room
- isAddingRoom: boolean = false;
- newRoomName: string = '';
+  isAddingRoom: boolean = false; // For adding a new room
+  newRoomName: string = '';
+  userId!: number; // Store userId as a class property
+
   constructor(private homeService: HomeService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
-    const userId = +this.route.snapshot.paramMap.get('userId')!;
-    this.loadHome(userId);
+    this.userId = +this.route.snapshot.paramMap.get('userId')!; // Assign userId to a class property
+    this.loadHome(this.userId);
   }
 
   loadHome(userId: number): void {
@@ -36,6 +37,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  
   toggleEditingHomeName(): void {
     this.isEditingHomeName = !this.isEditingHomeName;
     if (!this.isEditingHomeName) {
@@ -124,9 +126,8 @@ export class HomeComponent implements OnInit {
   
 
 
-
   enterRoom(roomId: number): void {
-    this.router.navigate([`/${roomId}/devices`]); // Navigate to room detail page
+    this.router.navigate([`/homes/${this.userId}/rooms/${roomId}/devices`]); // Use the class property userId
   }
 
   toggleRoomEdit(room: Room): void {

@@ -17,9 +17,11 @@ export class HomeService {
   }
 
   // Update home name
-  updateHomeName(homeId: number, homeName: string): Observable<Home> {
-    return this.http.put<Home>(`${this.apiBaseUrl}/user/${homeId}`, { name: homeName });
+  updateHomeName(userId: number, newHomeName: string): Observable<Home> {
+    const payload = { name: newHomeName }; // Backend expects this structure
+    return this.http.put<Home>(`${this.apiBaseUrl}/user/${userId}`, payload);
   }
+  
 
   updateRoomName(userId: number, roomId: number, newRoomName: string): Observable<Room> {
     return this.http.put<Room>(`${this.apiBaseUrl}/user/${userId}/rooms/${roomId}`, newRoomName, {

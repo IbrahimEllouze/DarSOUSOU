@@ -13,6 +13,7 @@ import com.example.dari.service.inter.IDeviceService;
 import com.example.dari.service.inter.IRoomService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -55,15 +56,21 @@ public class HomeController {
     }
 
 
-    @PostMapping("/user/{userId}")
-    public ResponseEntity<Home> updateUserHome(@PathVariable Long userId, @RequestBody String homeName) {
+    @PutMapping("/user/{userId}")
+    public ResponseEntity<Home> updateUserHome(@PathVariable Long userId, @RequestBody Map<String, String> request) {
+        if (!request.containsKey("name")) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         try {
+            String homeName = request.get("name");
             Home updatedHome = userService.updateHomeForUser(userId, homeName);
             return new ResponseEntity<>(updatedHome, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
+
+
 
     @GetMapping("/user/{userId}/rooms")
     public ResponseEntity<List<Room>> getRoomsByUser(@PathVariable Long userId) {

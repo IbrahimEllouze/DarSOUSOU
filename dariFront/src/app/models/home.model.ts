@@ -1,8 +1,10 @@
 export interface Home {
-    id: number;
-    name: string;
-    rooms: Room[];
-  }
+  id: number;
+  name: string;
+  userId: number; // Add this if it's missing
+  rooms: Room[];
+}
+
   
   export interface Room {
     id: number;
