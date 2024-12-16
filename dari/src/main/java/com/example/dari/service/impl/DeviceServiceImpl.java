@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.dari.entities.Device;
+import com.example.dari.entities.Room;
 import com.example.dari.repository.DeviceRepository;
+import com.example.dari.repository.RoomRepository;
 import com.example.dari.service.inter.IDeviceService;
 
 import java.util.List;
@@ -15,13 +17,23 @@ public class DeviceServiceImpl implements IDeviceService {
     
     @Autowired
     private final DeviceRepository deviceRepository;
-
-    public DeviceServiceImpl(DeviceRepository deviceRepository) {
+    @Autowired
+    private final RoomRepository roomRepository;
+    
+    public DeviceServiceImpl(DeviceRepository deviceRepository, RoomRepository roomRepository) {
         this.deviceRepository = deviceRepository;
+		this.roomRepository = roomRepository;
     }
 
     @Override
     public Device saveDevice(Device device) {
+        if (device.getRoom() == null || device.getRoom().getId() == null) {
+            throw new IllegalArgumentException("Room ID must be provided.");
+        }
+        Optional<Room> roomOptional = roomRepository.findById(device.getRoom().getId());
+        if (!roomOptional.isPresent()) {
+            throw new IllegalArgumentException("Room not found for device.");
+        }
         return deviceRepository.save(device);
     }
 

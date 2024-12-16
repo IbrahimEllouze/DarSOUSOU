@@ -3,18 +3,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HomeService } from '../../services/home.service';
 import { Home, Room } from '../../models/home.model';
 
-
 @Component({
   selector: 'app-home',
   standalone: false,
-  
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+onHomeNameBlur($event: FocusEvent) {
+throw new Error('Method not implemented.');
+}
   home: Home | null = null;
   errorMessage: string | null = null;
-  isEditingHomeName: boolean = false;
+  isEditingHomeName: boolean = false; // Track inline editing state
   isAddingRoom: boolean = false; // For adding a new room
   newRoomName: string = '';
   userId!: number; // Store userId as a class property
@@ -37,14 +38,23 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  
+  // Toggle between inline editing and non-editing mode
   toggleEditingHomeName(): void {
     this.isEditingHomeName = !this.isEditingHomeName;
     if (!this.isEditingHomeName) {
-      this.updateHomeName(); // Save if we're done editing
+      this.updateHomeName(); // Save the updated name when exiting edit mode
     }
   }
 
+  // Handle real-time updates when editing
+  onHomeNameInput(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (this.home) {
+      this.home.name = target.innerText; // Update the home name dynamically
+    }
+  }
+
+  // Save the updated home name
   updateHomeName(): void {
     if (this.home && this.home.name.trim() !== '') {
       this.homeService.updateHomeName(this.home.id!, this.home.name).subscribe({
@@ -65,7 +75,7 @@ export class HomeComponent implements OnInit {
     if (homeId) {
       this.homeService.removeRoom(homeId, roomId).subscribe({
         next: () => {
-          this.home!.rooms = this.home!.rooms.filter(room => room.id !== roomId);  // Remove the room from the list
+          this.home!.rooms = this.home!.rooms.filter(room => room.id !== roomId); // Remove the room from the list
         },
         error: (error) => {
           this.errorMessage = 'Failed to remove the room.';
@@ -74,13 +84,11 @@ export class HomeComponent implements OnInit {
       });
     }
   }
-  
-  
+
   editRoomName(room: Room): void {
     if (room.isEditingName) {
       this.homeService.updateRoomName(this.home!.id!, room.id, room.newRoomName!).subscribe({
         next: (updatedRoom: Room) => {
-          // Find the room by ID and update its properties
           const roomIndex = this.home!.rooms.findIndex(r => r.id === room.id);
           if (roomIndex !== -1) {
             this.home!.rooms[roomIndex] = updatedRoom; // Update the entire room object
@@ -97,6 +105,7 @@ export class HomeComponent implements OnInit {
       room.newRoomName = room.name; // Initialize the new room name with the current name
     }
   }
+
   addNewRoom(): void {
     this.isAddingRoom = true;
     this.newRoomName = '';
@@ -117,14 +126,11 @@ export class HomeComponent implements OnInit {
       });
     }
   }
-  
 
   cancelAddingRoom(): void {
     this.isAddingRoom = false;
     this.newRoomName = '';
   }
-  
-
 
   enterRoom(roomId: number): void {
     this.router.navigate([`/homes/${this.userId}/rooms/${roomId}/devices`]); // Use the class property userId
