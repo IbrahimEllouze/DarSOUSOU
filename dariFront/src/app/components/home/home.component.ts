@@ -88,25 +88,35 @@ throw new Error('Method not implemented.');
   }
 
   editRoomName(room: Room): void {
-    if (room.isEditingName) {
+    if (!room.isEditingName) {
+      // Start editing: store current name for potential rollback
+      room.newRoomName = room.name;
+      room.isEditingName = true;
+    } else {
+      // Save new name and stop editing
+      const oldName = room.name; // Backup current name
+      room.name = room.newRoomName || room.name; // Optimistically update the UI
+      room.isEditingName = false;
+  
       this.homeService.updateRoomName(this.home!.id!, room.id, room.newRoomName!).subscribe({
         next: (updatedRoom: Room) => {
           const roomIndex = this.home!.rooms.findIndex(r => r.id === room.id);
           if (roomIndex !== -1) {
-            this.home!.rooms[roomIndex] = updatedRoom; // Update the entire room object
-            room.isEditingName = false; // Reset editing state
+            this.home!.rooms[roomIndex] = updatedRoom; // Update the room object
           }
+          room.name = updatedRoom.name; // Update the room name
         },
         error: (error) => {
           this.errorMessage = 'Failed to update room name.';
+          room.name = oldName; // Revert to the old name on failure
           console.error(error);
-        },
+        }
       });
-    } else {
-      room.isEditingName = true;
-      room.newRoomName = room.name; // Initialize the new room name with the current name
     }
   }
+  
+  
+  
 
   addNewRoom(): void {
     this.isAddingRoom = true;
@@ -138,6 +148,9 @@ throw new Error('Method not implemented.');
     this.router.navigate([`/homes/${this.userId}/rooms/${roomId}/devices`]); // Use the class property userId
   }
 
+  enterConnectedDevices(): void {
+    this.router.navigate([`/users/${this.userId}/devices/connected`]);
+  }
   toggleRoomEdit(room: Room): void {
     room.isEditingName = !room.isEditingName;
   }
