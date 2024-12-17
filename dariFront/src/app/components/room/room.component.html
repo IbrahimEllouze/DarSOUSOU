@@ -17,15 +17,17 @@
       <tr *ngFor="let device of devices">
         <td>
           <input
-  type="text"
-  [(ngModel)]="device.name"
-  (ngModelChange)="updateDeviceName(device, device.name)"
-/>
-
+            type="text"
+            [(ngModel)]="device.name"
+            (ngModelChange)="updateDeviceName(device, device.name)"
+          />
         </td>
         <td>{{ device.connected ? 'Connected' : 'Not Connected' }}</td>
         <td>
-          <button (click)="toggleDeviceActive(device)">
+          <button 
+            (click)="toggleDeviceActive(device)" 
+            [disabled]="!device.connected"
+            title="{{ !device.connected ? 'Device must be connected to change state' : '' }}">
             {{ device.active ? 'Turn Off' : 'Turn On' }}
           </button>
         </td>
