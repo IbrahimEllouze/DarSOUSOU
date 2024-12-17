@@ -21,5 +21,6 @@ export interface Home {
     turnedOnAt: string;
     active: boolean;
     connected: boolean;
-    isEditingName?: boolean; // Optional property
+    isEditingName?: boolean; 
+    roomId: number | null;// Optional property
   }

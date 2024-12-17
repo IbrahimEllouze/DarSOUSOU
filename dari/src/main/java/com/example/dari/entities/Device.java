@@ -36,7 +36,7 @@ public class Device {
     private Double energyRate; // Energy consumed per minute (in kWh)
 
     @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
+    @JoinColumn(name = "room_id")
     @JsonBackReference // Prevents infinite loop by not serializing the room here
     private Room room;
 

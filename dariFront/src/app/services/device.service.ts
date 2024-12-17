@@ -25,7 +25,9 @@ export class DeviceService {
     );
   }
   // Add device to a room
-  addDeviceToRoom(userId: number, deviceId: number, roomId: number): Observable<void> {
-    return this.http.post<void>(`${this.apiBaseUrl}/${userId}/devices/add-device`, { deviceId, roomId });
+  addDeviceToRoom(userId: number, deviceId: number, roomId: number): Observable<Device> {
+    const payload = { deviceId, roomId };
+    return this.http.post<Device>(`http://localhost:8080/users/${userId}/devices/add-device`, payload);
   }
+  
 }
