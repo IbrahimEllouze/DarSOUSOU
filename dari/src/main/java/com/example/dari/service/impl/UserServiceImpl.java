@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.dari.entities.Home;
 import com.example.dari.entities.User;
-import com.example.dari.repository.HomeRepository;
-import com.example.dari.repository.UserRepository;
+import com.example.dari.Repository.HomeRepository;
+import com.example.dari.Repository.UserRepository;
 import com.example.dari.service.inter.IUserService;
 
 import java.util.List;

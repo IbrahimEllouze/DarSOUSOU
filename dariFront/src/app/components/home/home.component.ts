@@ -45,7 +45,9 @@ throw new Error('Method not implemented.');
       this.updateHomeName(); // Save the updated name when exiting edit mode
     }
   }
-
+  enterConnectedDevices(): void {
+    this.router.navigate([`/users/${this.userId}/devices/connected`]);
+  }
   // Handle real-time updates when editing
   onHomeNameInput(event: Event): void {
     const target = event.target as HTMLElement;
