@@ -60,7 +60,9 @@
         <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
             <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
                 <li class=" scroll active"><a href="#home">home</a></li>
-                <li class="scroll"><a href="">Connected devices</a></li>
+                <li class="nav-item">
+                  <a class="nav-link" (click)="enterConnectedDevices()">Connected Devices</a>
+                </li>
                 <li class="scroll"><a href="">Dashboard</a></li>
                 <li class="scroll"><a href="">Store</a></li>
             </ul><!--/.nav -->
@@ -96,19 +98,31 @@
     <h3>Rooms</h3>
     <ul>
       <li *ngFor="let room of home.rooms" class="room-item">
-        <span class="room-name">{{ room.name }}</span>
-        <input *ngIf="room.isEditingName" [(ngModel)]="room.newRoomName" placeholder="Enter new room name" />
+        <!-- Room name editing -->
+        <span *ngIf="!room.isEditingName" class="room-name">{{ room.name }}</span>
+        <input 
+          *ngIf="room.isEditingName" 
+          [(ngModel)]="room.newRoomName" 
+          placeholder="Enter new room name" 
+          (keyup.enter)="editRoomName(room)" 
+        />
         
+        <!-- Edit/Save Button -->
         <button (click)="editRoomName(room)">
           {{ room.isEditingName ? 'Save' : 'Edit' }}
         </button>
+    
+        <!-- Remove Button -->
         <button class="remove-button" (click)="removeRoom(room.id)">Remove</button>
+    
+        <!-- Enter Room Button -->
         <button class="enter-button" (click)="enterRoom(room.id)">
           Enter <i class="fa fa-arrow-right"></i>
         </button>
-        
       </li>
     </ul>
+    
+    
 
     <div class="add-room-section">
       <button *ngIf="!isAddingRoom" (click)="addNewRoom()">Add New Room</button>
