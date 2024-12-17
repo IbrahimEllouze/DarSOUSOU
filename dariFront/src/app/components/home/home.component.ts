@@ -147,10 +147,6 @@ throw new Error('Method not implemented.');
   enterRoom(roomId: number): void {
     this.router.navigate([`/homes/${this.userId}/rooms/${roomId}/devices`]); // Use the class property userId
   }
-
-  enterConnectedDevices(): void {
-    this.router.navigate([`/users/${this.userId}/devices/connected`]);
-  }
   toggleRoomEdit(room: Room): void {
     room.isEditingName = !room.isEditingName;
   }
