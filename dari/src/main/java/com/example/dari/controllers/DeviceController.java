@@ -34,28 +34,35 @@ public class DeviceController {
             Long deviceId = payload.get("deviceId");
             Long roomId = payload.get("roomId");
 
+            System.out.println("Device ID: " + deviceId + ", Room ID: " + roomId); // Debugging
+
             if (deviceId != null && roomId != null) {
                 Room room = roomService.getRoom(roomId);
                 if (room != null) {
                     Device device = deviceService.getDevice(deviceId);
                     if (device != null) {
-                        device.setRoom(room); // Associate device with room
+                        System.out.println("Device before update: " + device); // Debugging
+                        device.setRoom(room);
                         Device updatedDevice = deviceService.saveDevice(device);
+                        System.out.println("Device after update: " + updatedDevice); // Debugging
                         return new ResponseEntity<>(updatedDevice, HttpStatus.OK);
                     } else {
-                        return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Device not found
+                        System.out.println("Device not found."); // Debugging
+                        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                     }
                 } else {
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Invalid room
+                    System.out.println("Room not found."); // Debugging
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
             } else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Missing data
+                System.out.println("Invalid payload."); // Debugging
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 
 

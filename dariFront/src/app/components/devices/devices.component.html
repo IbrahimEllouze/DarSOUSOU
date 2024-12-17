@@ -1,27 +1,37 @@
-
 <div *ngIf="connectedDevices.length === 0">
-    <p>No connected devices found.</p>
-  </div>
-  <h1>connected devices</h1>
-  <div *ngIf="connectedDevices.length > 0">
-    <div *ngFor="let device of connectedDevices">
-      <p>{{ device.name }}</p>
+  <p>No connected devices found.</p>
+</div>
+
+<h1>Connected Devices</h1>
+<div *ngIf="connectedDevices.length > 0">
+  <div *ngFor="let device of connectedDevices">
+    <p>{{ device.name }}</p>
+
+    <div *ngIf="device.roomId !== null; else noRoomAssigned">
+      <p>Room: {{ getRoomName(device.roomId) }}</p>
+      <button mat-button (click)="onShowRoomDropdown(device.id)">
+        {{ selectedRoomId === device.id ? 'Cancel Update' : 'Update Room' }}
+      </button>
+    </div>
+    
+    <ng-template #noRoomAssigned>
       <button mat-button (click)="onShowRoomDropdown(device.id)">
         {{ selectedRoomId === device.id ? 'Cancel' : 'Add to Room' }}
       </button>
-  
-      <div *ngIf="selectedRoomId === device.id">
-        <form [formGroup]="roomForm" (ngSubmit)="onAddToRoom(device.id)">
-          <label for="roomId">Select Room:</label>
-          <select formControlName="roomId">
-            <option *ngFor="let room of availableRooms" [value]="room.id">
-              {{ room.name }}
-            </option>
-          </select>
-          
-          <button mat-button type="submit">Submit</button>
-        </form>
-      </div>
+    </ng-template>
+
+    <div *ngIf="selectedRoomId === device.id">
+      <form [formGroup]="roomForm" (ngSubmit)="onRoomSubmit(device.id, device.roomId)">
+        <label for="roomId">Select Room:</label>
+        <select formControlName="roomId">
+          <option *ngFor="let room of availableRooms" [value]="room.id">
+            {{ room.name }}
+          </option>
+        </select>
+        <button mat-button type="submit">
+          {{ device.roomId ? 'Update Room' : 'Add to Room' }}
+        </button>
+      </form>
     </div>
   </div>
-  
+</div>
