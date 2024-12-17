@@ -7,8 +7,8 @@
   <div *ngFor="let device of connectedDevices">
     <p>{{ device.name }}</p>
 
-    <div *ngIf="device.roomId !== null; else noRoomAssigned">
-      <p>Room: {{ getRoomName(device.roomId) }}</p>
+    <div *ngIf="device.roomId !== null && device.roomId !== undefined; else noRoomAssigned">
+      <p>Room: {{ getRoomName(device.roomId!) }}</p>
       <button mat-button (click)="onShowRoomDropdown(device.id)">
         {{ selectedRoomId === device.id ? 'Cancel Update' : 'Update Room' }}
       </button>
