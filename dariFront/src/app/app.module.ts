@@ -16,6 +16,7 @@ import { HomeComponent } from './components/home/home.component';
 import { RoomComponent } from './components/room/room.component';
 import { DeviceComponent } from './components/devices/devices.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { StoreComponent } from './components/store/store.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -25,7 +26,9 @@ const routes: Routes = [
   { path: 'homes/:userId/rooms/:roomId/devices', component: RoomComponent },
   { path: 'users/:userId/devices/connected', component: DeviceComponent },
   { path: '', redirectTo: '/index', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent }
+  { path: 'users/:userId/dashboard', component: DashboardComponent },
+  { path: 'users/:userId/store', component: StoreComponent },
+
 ];
 
 @NgModule({
@@ -36,7 +39,9 @@ const routes: Routes = [
     IndexComponent, 
     HomeComponent, 
     RoomComponent, 
-    DeviceComponent, DashboardComponent,
+    DeviceComponent, 
+    DashboardComponent, 
+    StoreComponent,
   ],
   imports: [
     ReactiveFormsModule,

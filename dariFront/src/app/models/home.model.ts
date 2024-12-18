@@ -25,4 +25,5 @@ room: any;
   newDeviceName?: string; 
   roomId: number | null;
   roomName?: string;
+  randomConsumption?: number;
 }
