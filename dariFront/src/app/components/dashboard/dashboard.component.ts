@@ -17,7 +17,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     const userId = 1; // Example user ID
-
+    
     // Fetch rooms
     this.homeService.getRoomsByUserId(userId).subscribe({
       next: (data: Room[]) => {
@@ -27,8 +27,10 @@ export class DashboardComponent implements OnInit {
         console.error('Failed to fetch rooms:', err);
         this.rooms = []; // Fallback to empty if fetch fails
       }
+      
+      
     });
-
+    
     // Fetch devices for the first room if available
     this.homeService.getDevicesByRoom(userId, 1).subscribe({
       next: (data: Device[]) => {

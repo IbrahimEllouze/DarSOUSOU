@@ -48,6 +48,9 @@ throw new Error('Method not implemented.');
   enterConnectedDevices(): void {
     this.router.navigate([`/users/${this.userId}/devices/connected`]);
   }
+  enterDasboard(): void {
+    this.router.navigate([`/users/${this.userId}/dashboard`]);
+  }
   // Handle real-time updates when editing
   onHomeNameInput(event: Event): void {
     const target = event.target as HTMLElement;
