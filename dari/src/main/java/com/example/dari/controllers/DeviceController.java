@@ -66,9 +66,32 @@ public class DeviceController {
 
 
 
-    /**
-     * Endpoint to find a device by its name.
-     */
+    @PutMapping("/{deviceId}/update-room")
+    public ResponseEntity<Device> updateDeviceRoom(
+            @PathVariable Long userId,
+            @PathVariable Long deviceId,
+            @RequestBody Map<String, Long> payload) {
+        try {
+            Long roomId = payload.get("roomId");
+            Device device = deviceService.getDevice(deviceId);
+
+            if (device == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            Room room = roomId != null ? roomService.getRoom(roomId) : null;
+            if (roomId != null && room == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            device.setRoom(room);
+            Device updatedDevice = deviceService.saveDevice(device);
+            return new ResponseEntity<>(updatedDevice, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/name/{name}")
     public ResponseEntity<Device> findDeviceByName(@PathVariable Long userId, @PathVariable String name) {
         try {

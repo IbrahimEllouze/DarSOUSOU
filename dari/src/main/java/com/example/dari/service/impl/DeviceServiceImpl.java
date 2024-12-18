@@ -86,6 +86,10 @@ public class DeviceServiceImpl implements IDeviceService {
             existingDevice.setEnergyRate(deviceDetails.getEnergyRate());
             existingDevice.setConnected(deviceDetails.isConnected());
             existingDevice.setTurnedOnAt(deviceDetails.getTurnedOnAt());
+            if (roomId==0 ) {
+            	existingDevice.setRoom(null); 
+            }
+            
             return deviceRepository.save(existingDevice);
         }
         return null;
@@ -104,6 +108,17 @@ public class DeviceServiceImpl implements IDeviceService {
 	@Override
 	public List<Device> getDevicesByRoom(Long userId, Long roomId) {
 		return deviceRepository.findByRoomId(roomId);
+	}
+
+	@Override
+	public Device updateDeviceRoomIdToNull(Long userId, Long deviceId) {
+		Optional<Device> optionalDevice = deviceRepository.findById(deviceId);
+	    if (optionalDevice.isPresent()) {
+	        Device device = optionalDevice.get();
+	        device.setRoom(null); // Set the room ID to null
+	        return deviceRepository.save(device); // Save the updated device
+	    }
+	    return null;
 	}
 
     

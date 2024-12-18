@@ -22,8 +22,10 @@ public class HomeController {
 
     private final UserServiceImpl userService;
     private final IRoomService roomService;
+    @Autowired
     private final IDeviceService deviceService;
-
+    
+    
     @Autowired
     public HomeController(UserServiceImpl userService, IRoomService roomService, IDeviceService deviceService) {
         this.userService = userService;
@@ -156,6 +158,5 @@ public class HomeController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-   
-
+    
 }

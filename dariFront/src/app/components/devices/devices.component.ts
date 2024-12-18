@@ -3,7 +3,7 @@ import { DeviceService } from '../../services/device.service';
 import { Device, Room } from '../../models/home.model';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar'; // Import MatSnackBar
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-device',
@@ -22,38 +22,34 @@ export class DeviceComponent implements OnInit {
     private deviceService: DeviceService,
     private fb: FormBuilder,
     private router: Router,
-    private snackBar: MatSnackBar // Inject MatSnackBar
+    private snackBar: MatSnackBar
   ) {
     this.roomForm = this.fb.group({
-      roomId: [''], // Form control to select a room
+      roomId: [''],
     });
   }
 
   ngOnInit(): void {
+    this.userId = this.extractUserIdFromUrl();
     this.loadConnectedDevices();
-    this.userId = +this.router.url.split('/')[2]; // Get user ID from URL
     this.fetchAvailableRooms();
+  }
+
+  private extractUserIdFromUrl(): number {
+    return +this.router.url.split('/')[2];
   }
 
   private loadConnectedDevices(): void {
     this.deviceService.getConnectedDevices(this.userId).subscribe(
-      (devices) => {
-        this.connectedDevices = devices;
-      },
-      (error) => {
-        console.error('Error fetching connected devices:', error);
-      }
+      (devices) => (this.connectedDevices = devices),
+      (error) => console.error('Error fetching connected devices:', error)
     );
   }
 
   private fetchAvailableRooms(): void {
     this.deviceService.getAvailableRooms(this.userId).subscribe(
-      (rooms) => {
-        this.availableRooms = rooms;
-      },
-      (error) => {
-        console.error('Error fetching available rooms:', error);
-      }
+      (rooms) => (this.availableRooms = rooms),
+      (error) => console.error('Error fetching available rooms:', error)
     );
   }
 
@@ -63,33 +59,26 @@ export class DeviceComponent implements OnInit {
 
   onRoomSubmit(deviceId: number, currentRoomId: number | null): void {
     const roomId = this.roomForm.get('roomId')?.value;
-    if (roomId) {
-      if (roomId === currentRoomId) {
-        console.error('Selected room is the same as the current room.');
-        return;
-      }
 
-      this.deviceService.addDeviceToRoom(this.userId, deviceId, roomId).subscribe(
-        () => {
-          this.snackBar.open(
-            `Device ${currentRoomId ? 'updated' : 'added'} to room successfully.`,
-            'Close',
-            { duration: 3000 } // Show the message for 3 seconds
-          );
-          this.selectedRoomId = null;
-          this.loadConnectedDevices();
-        },
-        (error) => {
-          console.error('Error updating/adding device to room:', error);
-        }
-      );
-    } else {
-      console.error('No room selected!');
+    if (roomId === null || roomId === currentRoomId) {
+      this.snackBar.open('No changes to update', 'Close', { duration: 2000 });
+      return;
     }
+
+    this.deviceService.addDeviceToRoom(this.userId, deviceId, roomId).subscribe(
+      (updatedDevice) => {
+        this.snackBar.open('Device room updated successfully!', 'Close', { duration: 2000 });
+        this.loadConnectedDevices();
+      },
+      (error) => {
+        console.error('Error updating device room:', error);
+        this.snackBar.open('Failed to update device room', 'Close', { duration: 2000 });
+      }
+    );
   }
 
   enterHome(): void {
-    this.router.navigate([`/homes/${this.userId}/rooms`]); // Use the class property userId
+    this.router.navigate([`/homes/${this.userId}/rooms`]);
   }
 
   enterConnectedDevices(): void {

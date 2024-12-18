@@ -57,9 +57,13 @@ export class HomeService {
   getRoomById(roomId: number): Observable<Room> {
   return this.http.get<Room>(`${this.apiBaseUrl}/rooms/${roomId}`);
 }
-updateDeviceInRoom(homeId: number, roomId: number, deviceId: number, device: Device): Observable<Device> {
-  return this.http.put<Device>(`${this.apiBaseUrl}/user/${homeId}/rooms/${roomId}/devices/${deviceId}`, device);
+updateDeviceInRoom(homeId: number, roomId: number, deviceId: number, device: Partial<Device>): Observable<Device> {
+  return this.http.put<Device>(
+    `${this.apiBaseUrl}/user/${homeId}/rooms/${roomId}/devices/${deviceId}`,
+    device
+  );
 }
+
 // Fetch devices by room and user
 getDevicesByRoom(userId: number, roomId: number): Observable<Device[]> {
   return this.http.get<Device[]>(`${this.apiBaseUrl}/user/${userId}/rooms/${roomId}/devices`);
@@ -73,9 +77,11 @@ updateDevice(userId: number, roomId: number, deviceId: number, device: Device): 
   );
 }
 
-// Remove a device from a room
-removeDevice(userId: number, roomId: number, deviceId: number): Observable<void> {
-  return this.http.delete<void>(`${this.apiBaseUrl}/user/${userId}/rooms/${roomId}/devices/${deviceId}`);
+updateDeviceRoomIdToNull(userId: number, deviceId: number): Observable<Device> {
+  return this.http.put<Device>(
+    `${this.apiBaseUrl}/user/${userId}/devices/${deviceId}/null-room`,
+    {}
+  );
 }
 
 

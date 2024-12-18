@@ -129,7 +129,7 @@
               <button (click)="editDeviceName(device)">
                 {{ device.isEditingName ? 'Save' : 'Edit' }}
               </button>
-              <button class="remove-button" (click)="removeDevice(device.id)">Remove</button>
+              <button class="remove-button" (click)="updateDeviceRoomToNull(device)">Remove</button>
             </td>
           </tr>
         </tbody>

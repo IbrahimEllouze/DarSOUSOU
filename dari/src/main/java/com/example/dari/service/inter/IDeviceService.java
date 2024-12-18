@@ -29,6 +29,8 @@ public interface IDeviceService {
 
 	boolean removeDeviceFromRoom(Long userId, Long roomId, Long deviceId);
 
+	Device updateDeviceRoomIdToNull(Long userId, Long deviceId);
+
 	
 
 }

@@ -29,5 +29,6 @@ export class DeviceService {
     const payload = { deviceId, roomId };
     return this.http.post<Device>(`http://localhost:8080/users/${userId}/devices/add-device`, payload);
   }
+
   
 }

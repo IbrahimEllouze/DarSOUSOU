@@ -153,16 +153,19 @@ export class RoomComponent implements OnInit {
     );
   }
 
-  removeDevice(deviceId: number): void {
-    this.homeService.removeDevice(this.userId, this.roomId, deviceId).subscribe(
+  updateDeviceRoomToNull(device: Device): void {
+    device.roomId = null; // Set the roomId to null for this device
+    this.homeService.updateDevice(this.userId, 0, device.id, device).subscribe(
       () => {
-        this.devices = this.devices.filter((d) => d.id !== deviceId);
+        
+        this.fetchDevices(); // Refresh devices to reflect the changes
       },
       (error) => {
-        this.errorMessage = 'Error removing device';
+        this.showErrorToast('Error updating device room to null.');
       }
     );
   }
+  
 
   enterConnectedDevices(): void {
     this.router.navigate([`/users/${this.userId}/devices/connected`]);
@@ -179,6 +182,17 @@ export class RoomComponent implements OnInit {
     this.errorToast = message;
   
     // Automatically hide the error toast after 4 seconds
+    setTimeout(() => {
+      this.errorToast = null;
+    }, 4000);
+  }
+
+
+ 
+
+  showSuccessToast(message: string): void {
+    this.errorToast = null; // Hide previous error
+    this.errorToast = message;
     setTimeout(() => {
       this.errorToast = null;
     }, 4000);
