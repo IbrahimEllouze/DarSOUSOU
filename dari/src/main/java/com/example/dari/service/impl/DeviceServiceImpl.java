@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.dari.entities.Device;
 import com.example.dari.entities.Room;
-import com.example.dari.Repository.DeviceRepository;
-import com.example.dari.Repository.RoomRepository;
+import com.example.dari.repository.DeviceRepository;
+import com.example.dari.repository.RoomRepository;
 import com.example.dari.service.inter.IDeviceService;
 
 import java.util.List;

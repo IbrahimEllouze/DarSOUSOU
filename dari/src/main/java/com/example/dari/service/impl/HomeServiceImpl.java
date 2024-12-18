@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.dari.entities.Home;
-import com.example.dari.Repository.HomeRepository;
+import com.example.dari.repository.HomeRepository;
 import com.example.dari.service.inter.IHomeService;
 
 import java.util.List;

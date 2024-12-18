@@ -1,4 +1,4 @@
-package com.example.dari.Repository;
+package com.example.dari.repository;
 
 import java.util.Optional;
 

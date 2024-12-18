@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.dari.entities.Home;
 import com.example.dari.entities.Room;
-import com.example.dari.Repository.RoomRepository;
+import com.example.dari.repository.RoomRepository;
 import com.example.dari.service.inter.IRoomService;
 import com.example.dari.service.inter.IUserService;
 

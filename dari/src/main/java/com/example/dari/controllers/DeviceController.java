@@ -29,40 +29,39 @@ public class DeviceController {
     
 
     @PostMapping("/add-device")
-    public ResponseEntity<Device> addDeviceToRoom(@PathVariable Long userId, @RequestBody Map<String, Long> payload) {
+    public ResponseEntity<Device> addDeviceToRoom(
+            @PathVariable Long userId,
+            @RequestBody Map<String, Long> payload) {
         try {
             Long deviceId = payload.get("deviceId");
             Long roomId = payload.get("roomId");
 
-            System.out.println("Device ID: " + deviceId + ", Room ID: " + roomId); // Debugging
-
-            if (deviceId != null && roomId != null) {
-                Room room = roomService.getRoom(roomId);
-                if (room != null) {
-                    Device device = deviceService.getDevice(deviceId);
-                    if (device != null) {
-                        System.out.println("Device before update: " + device); // Debugging
-                        device.setRoom(room);
-                        Device updatedDevice = deviceService.saveDevice(device);
-                        System.out.println("Device after update: " + updatedDevice); // Debugging
-                        return new ResponseEntity<>(updatedDevice, HttpStatus.OK);
-                    } else {
-                        System.out.println("Device not found."); // Debugging
-                        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-                    }
-                } else {
-                    System.out.println("Room not found."); // Debugging
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                }
-            } else {
-                System.out.println("Invalid payload."); // Debugging
+            if (deviceId == null) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
+
+            Device device = deviceService.getDevice(deviceId);
+            if (device == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            if (roomId != null) {
+                Room room = roomService.getRoom(roomId);
+                if (room == null) {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                device.setRoom(room);
+            } else {
+                device.setRoom(null);
+            }
+
+            Device updatedDevice = deviceService.saveDevice(device);
+            return new ResponseEntity<>(updatedDevice, HttpStatus.OK);
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
 
@@ -91,6 +90,7 @@ public class DeviceController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @GetMapping("/name/{name}")
     public ResponseEntity<Device> findDeviceByName(@PathVariable Long userId, @PathVariable String name) {
