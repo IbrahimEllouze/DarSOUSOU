@@ -167,7 +167,9 @@ export class RoomComponent implements OnInit {
   enterConnectedDevices(): void {
     this.router.navigate([`/users/${this.userId}/devices/connected`]);
   }
-
+  enterHome(): void {
+    this.router.navigate([`/homes/${this.userId}/rooms`]); // Use the class property userId
+  }
   addNewDevice(): void {
     // Navigate to add device page or open a modal to add a new device
     this.router.navigate([`/users/${this.userId}/rooms/${this.roomId}/add-device`]);

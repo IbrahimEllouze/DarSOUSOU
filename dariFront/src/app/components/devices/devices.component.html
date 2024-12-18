@@ -1,37 +1,106 @@
-<div *ngIf="connectedDevices.length === 0">
-  <p>No connected devices found.</p>
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Devices - DaRi</title>
+  <!--font-family-->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+        
+  <!-- For favicon png -->
+  <link rel="shortcut icon" type="image/icon" href="/assets/logo/favicon.png"/>
+ 
+  <!--font-awesome.min.css-->
+  <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
 
-<h1>Connected Devices</h1>
-<div *ngIf="connectedDevices.length > 0">
-  <div *ngFor="let device of connectedDevices">
-    <p>{{ device.name }}</p>
+  <!--linear icon css-->
+  <link rel="stylesheet" href="/assets/css/linearicons.css">
 
-    <div *ngIf="device.roomId !== null && device.roomId !== undefined; else noRoomAssigned">
-      <p>Room: {{ getRoomName(device.roomId!) }}</p>
-      <button mat-button (click)="onShowRoomDropdown(device.id)">
-        {{ selectedRoomId === device.id ? 'Cancel Update' : 'Update Room' }}
-      </button>
+  <!--animate.css-->
+  <link rel="stylesheet" href="/assets/css/animate.css">
+
+  <!--flaticon.css-->
+  <link rel="stylesheet" href="/assets/css/flaticon.css">
+
+  <!--slick.css-->
+  <link rel="stylesheet" href="/assets/css/slick.css">
+  <link rel="stylesheet" href="/assets/css/slick-theme.css">
+
+  <!--bootstrap.min.css-->
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+
+  <!-- bootsnav -->
+  <link rel="stylesheet" href="/assets/css/bootsnav.css">	
+  
+  <!--style.css-->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  
+  <!--responsive.css-->
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+</head>
+<body>
+  <!-- Start Navigation -->
+  <nav class="navbar navbar-default bootsnav navbar-sticky navbar-scrollspy" data-minus-value-desktop="70" data-minus-value-mobile="55" data-speed="1000">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+          <i class="fa fa-bars"></i>
+        </button>
+        <a class="navbar-brand" href="index.html">Da<span>Ri</span></a>
+      </div>
+
+      <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
+        <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
+          <li class="scroll active"><a class="nav-link" (click)="enterHome()">home</a></li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="enterConnectedDevices()">Connected Devices</a>
+          </li>
+          <li class="scroll"><a href="">Dashboard</a></li>
+          <li class="scroll"><a href="">Store</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- End Navigation -->
+  
+  <div class="devices-container">
+    <div class="devices-header">
+      <h1 class="devices-title">Connected Devices</h1>
     </div>
     
-    <ng-template #noRoomAssigned>
-      <button mat-button (click)="onShowRoomDropdown(device.id)">
-        {{ selectedRoomId === device.id ? 'Cancel' : 'Add to Room' }}
-      </button>
-    </ng-template>
+    <div *ngIf="connectedDevices.length === 0" class="no-devices-message">
+      <p>No connected devices found.</p>
+    </div>
 
-    <div *ngIf="selectedRoomId === device.id">
-      <form [formGroup]="roomForm" (ngSubmit)="onRoomSubmit(device.id, device.roomId)">
-        <label for="roomId">Select Room:</label>
-        <select formControlName="roomId">
-          <option *ngFor="let room of availableRooms" [value]="room.id">
-            {{ room.name }}
-          </option>
-        </select>
-        <button mat-button type="submit">
-          {{ device.roomId ? 'Update Room' : 'Add to Room' }}
-        </button>
-      </form>
+    <div *ngIf="connectedDevices.length > 0">
+      <div *ngFor="let device of connectedDevices" class="device-item">
+        <div class="device-info">
+          <p class="device-name">{{ device.name }}</p>
+          <p *ngIf="device.roomId" class="device-room">
+            Room: {{ getRoomName(device.roomId!) }}
+          </p>
+        </div>
+
+        <div class="device-actions">
+          <button class="action-button" mat-button (click)="onShowRoomDropdown(device.id)">
+            {{ selectedRoomId === device.id ? 'Cancel Update' : device.roomId ? 'Update Room' : 'Add to Room' }}
+          </button>
+        </div>
+
+        <div *ngIf="selectedRoomId === device.id" class="room-selection">
+          <form [formGroup]="roomForm" (ngSubmit)="onRoomSubmit(device.id, device.roomId)">
+            <label for="roomId" class="room-label">Select Room:</label>
+            <select formControlName="roomId" class="room-dropdown">
+              <option *ngFor="let room of availableRooms" [value]="room.id">
+                {{ room.name }}
+              </option>
+            </select>
+            <button mat-button type="submit" class="submit-button">
+              {{ device.roomId ? 'Update Room' : 'Add to Room' }}
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</body>
+</html>

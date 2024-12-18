@@ -10,46 +10,67 @@ body {
   background-color: rgb(238, 243, 248);
 }
 
+/* General Styles */
+input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+  padding: 5px 10px;
+  width: 100%;
+}
+
+.loading-message,
+.error-message {
+  color: #6c757d;
+  margin: 15px 0;
+  text-align: center;
+}
+
+.error-message {
+  color: #dc3545;
+}
+
+/* Home Page */
 .home-container {
-  padding: 20px;
-  width: 80%;
-  margin: 20px auto;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  padding: 20px;
+  width: 80%;
 }
 
-/* Header */
 .home-header {
-  text-align: center;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .home-name {
+  color: #333333;
   font-size: 2.5rem;
   font-weight: bold;
   text-transform: uppercase;
-  color: #333333;
 }
 
 h3 {
-  text-align: center;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 /* Table Styles */
 .device-table {
-  width: 100%;
   border-collapse: collapse;
+  width: 100%;
 }
 
 .device-table th,
 .device-table td {
-  color: #333333;
   border: 1px solid #dee2e6;
+  color: #333333;
+  max-width: 100px;
   padding: 12px;
   text-align: center;
-  max-width: 100px;
 }
 
 .device-table th {
@@ -69,17 +90,31 @@ h3 {
 /* Buttons */
 button {
   background-color: #007bff;
-  color: white;
   border: none;
   border-radius: 4px;
-  padding: 8px 10px;
-  margin: 5px;
+  color: white;
   cursor: pointer;
+  margin: 5px;
+  padding: 8px 10px;
   transition: background-color 0.3s;
 }
 
 button:hover {
   background-color: #0056b3;
+}
+
+button[disabled] {
+  background-color: #a94442; /* Dark red for disabled buttons */
+  color: #fff;
+  cursor: not-allowed;
+}
+
+button.active-button {
+  background-color: #28a745; /* Green */
+}
+
+button.inactive-button {
+  background-color: #a94442; /* Dark red for inactive devices */
 }
 
 .enter-button {
@@ -98,33 +133,14 @@ button:hover {
   background-color: #e03e3e;
 }
 
-input {
-  padding: 5px 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.loading-message,
-.error-message {
-  text-align: center;
-  margin: 15px 0;
-  color: #6c757d;
-}
-
-.error-message {
-  color: #dc3545;
-}
-/* Connection Status Badges */
+/* Status Badges */
 .status-badge {
-  display: inline-block;
-  padding: 6px 12px;
   border-radius: 20px;
+  color: white;
+  display: inline-block;
   font-size: 0.9rem;
   font-weight: bold;
-  color: white;
+  padding: 6px 12px;
   text-transform: uppercase;
 }
 
@@ -136,36 +152,28 @@ input {
   background-color: #dc3545; /* Red for not connected */
 }
 
-/* Turn On/Off Button Styling */
-button[disabled] {
-  background-color: #a94442; /* Dark red for disabled buttons */
-  color: #fff;
-  cursor: not-allowed;
-}
-
-button.active-button {
-  background-color: #28a745; /* Green */
-}
-
-button.inactive-button {
-  background-color: #a94442; /* Dark red for inactive devices */
-}
-
-/* Toast Notification for Errors */
+/* Toast Notifications */
 .error-toast {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+  animation: fadeOut 4s forwards;
   background-color: #dc3545;
+  border-radius: 5px;
+  bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   color: white;
   padding: 10px 20px;
-  border-radius: 5px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  animation: fadeOut 4s forwards;
+  position: fixed;
+  right: 20px;
 }
 
 @keyframes fadeOut {
-  0% { opacity: 1; }
-  75% { opacity: 0.8; }
-  100% { opacity: 0; display: none; }
+  0% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    display: none;
+  }
 }

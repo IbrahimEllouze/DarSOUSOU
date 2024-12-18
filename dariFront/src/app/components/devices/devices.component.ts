@@ -3,11 +3,11 @@ import { DeviceService } from '../../services/device.service';
 import { Device, Room } from '../../models/home.model';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar'; // Import MatSnackBar
 
 @Component({
   selector: 'app-device',
   standalone: false,
-  
   templateUrl: './devices.component.html',
   styleUrls: ['./devices.component.css'],
 })
@@ -21,7 +21,8 @@ export class DeviceComponent implements OnInit {
   constructor(
     private deviceService: DeviceService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar // Inject MatSnackBar
   ) {
     this.roomForm = this.fb.group({
       roomId: [''], // Form control to select a room
@@ -70,10 +71,10 @@ export class DeviceComponent implements OnInit {
 
       this.deviceService.addDeviceToRoom(this.userId, deviceId, roomId).subscribe(
         () => {
-          console.log(
-            `Device ${
-              currentRoomId ? 'updated' : 'added'
-            } to room successfully.`
+          this.snackBar.open(
+            `Device ${currentRoomId ? 'updated' : 'added'} to room successfully.`,
+            'Close',
+            { duration: 3000 } // Show the message for 3 seconds
           );
           this.selectedRoomId = null;
           this.loadConnectedDevices();
@@ -85,6 +86,14 @@ export class DeviceComponent implements OnInit {
     } else {
       console.error('No room selected!');
     }
+  }
+
+  enterHome(): void {
+    this.router.navigate([`/homes/${this.userId}/rooms`]); // Use the class property userId
+  }
+
+  enterConnectedDevices(): void {
+    this.router.navigate([`/users/${this.userId}/devices/connected`]);
   }
 
   getRoomName(roomId: number): string {

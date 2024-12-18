@@ -14,6 +14,7 @@ import { HomeComponent } from './components/home/home.component';
 import { RoomComponent } from './components/room/room.component';
 import { DeviceComponent } from './components/devices/devices.component';  // Import HomeComponent
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 //import { RoomSelectingDialogComponent } from './components/room-selecting-dialog/room-selecting-dialog.component';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -49,6 +50,7 @@ const routes: Routes = [
     HttpClientModule,
     RouterModule.forRoot(routes),
     MatDialogModule, 
+    MatSnackBarModule,
 
   ],
   providers: [],
