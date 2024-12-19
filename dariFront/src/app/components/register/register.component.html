@@ -9,7 +9,8 @@
   <div class="background-container">
     <div class="register-container">
       <div class="register-wrapper">
-        <div class="register-form">
+        <!-- Registration Form -->
+        <div *ngIf="!showHomeForm" class="register-form">
           <h2>Register</h2>
           <form (ngSubmit)="register()">
             <div class="form-group">
@@ -51,8 +52,31 @@
             {{ errorMessage }}
           </div>
         </div>
+  
+        <!-- Home Name Form -->
+        <div *ngIf="showHomeForm" class="home-form">
+          <h2>Create Your Home</h2>
+          <form (ngSubmit)="createHome()">
+            <div class="form-group">
+              <label for="homeName">Home Name:</label>
+              <input
+                id="homeName"
+                type="text"
+                [(ngModel)]="homeName"
+                name="homeName"
+                placeholder="Enter your home name"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Save Home</button>
+          </form>
+          <div *ngIf="errorMessage" class="error">
+            {{ errorMessage }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
+  
 </body>
 </html>

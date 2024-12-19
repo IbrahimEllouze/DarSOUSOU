@@ -88,7 +88,15 @@ public class UserServiceImpl implements IUserService {
         return user.getHome();
     }
 
-    
+    public Home createHomeForUser(Long userId, String homeName) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Home home = new Home();
+        home.setName(homeName);
+        home.setUser(user);
+        return homeRepository.save(home);
+    }
+
     public Home updateHomeForUser(Long userId, String newHomeName) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));

@@ -62,19 +62,46 @@
   </nav>
   <!-- End Navigation -->
   
-  <div *ngFor="let device of connectedDevices">
-    <p>{{ device.name }}</p>
-    <button (click)="onShowRoomDropdown(device.id)">Select Room</button>
-
-    <div *ngIf="selectedRoomId === device.id">
-        <form [formGroup]="roomForm" (ngSubmit)="onRoomSubmit(device.id, device.roomId)">
-            <label for="roomId">Choose Room:</label>
-            <select formControlName="roomId">
-                <option [value]="null">None</option>
-                <option *ngFor="let room of availableRooms" [value]="room.id">{{ room.name }}</option>
-            </select>
-            <button type="submit">add to a Room</button>
-        </form>
+  <div class="devices-container">
+    <div class="devices-header">
+      <h1 class="devices-title">Connected Devices</h1>
     </div>
-</div>
-
+  
+    <div *ngIf="connectedDevices.length === 0" class="no-devices-message">
+      <p>No connected devices found.</p>
+    </div>
+  
+    <div *ngIf="connectedDevices.length > 0">
+      <div *ngFor="let device of connectedDevices" class="device-item">
+        <div class="device-info">
+          <p class="device-name">{{ device.name }}</p>
+          <p *ngIf="device.roomId" class="device-room">
+            Room: {{ getRoomName(device.roomId!) }}
+          </p>
+        </div>
+  
+        <div class="device-actions">
+          <button class="action-button" mat-button (click)="onShowRoomDropdown(device.id)">
+            {{ selectedRoomId === device.id ? 'Cancel Update' : device.roomId ? 'Update Room' : 'Add to Room' }}
+          </button>
+        </div>
+  
+        <div *ngIf="selectedRoomId === device.id" class="room-selection">
+          <form [formGroup]="roomForm" (ngSubmit)="onRoomSubmit(device.id, device.roomId)">
+            <label for="roomId" class="room-label">Select Room:</label>
+            <select formControlName="roomId" class="room-dropdown">
+              <option [value]="null">None</option>
+              <option *ngFor="let room of availableRooms" [value]="room.id">
+                {{ room.name }}
+              </option>
+            </select>
+            <button mat-button type="submit" class="submit-button">
+              {{ device.roomId ? 'Update Room' : 'Add to Room' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>  

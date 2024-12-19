@@ -98,6 +98,19 @@ public class HomeController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping("/user/{userId}")
+    public ResponseEntity<Home> createHomeForUser(@PathVariable Long userId, @RequestBody Map<String, String> request) {
+        if (!request.containsKey("name")) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            String homeName = request.get("name");
+            Home createdHome = userService.createHomeForUser(userId, homeName); // Implement this in UserServiceImpl
+            return new ResponseEntity<>(createdHome, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @PutMapping("/user/{userId}/rooms/{roomId}")
     public ResponseEntity<Room> updateRoomName(@PathVariable Long userId, @PathVariable Long roomId, @RequestBody String newRoomName) {

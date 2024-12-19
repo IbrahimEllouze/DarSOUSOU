@@ -84,6 +84,9 @@ updateDeviceRoomIdToNull(userId: number, deviceId: number): Observable<Device> {
   );
 }
 
+createHome(userId: number, payload: { name: string }): Observable<Home> {
+  return this.http.post<Home>(`${this.apiBaseUrl}/user/${userId}`, payload);
+}
 
 
 }
