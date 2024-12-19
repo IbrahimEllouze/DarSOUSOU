@@ -1,0 +1,66 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Backend (Spring Boot)
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven
+
+      - name: Build Backend
+        run: mvn clean install -DskipTests=true
+
+      # Frontend (Angular)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Cache Node.js Modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node
+
+      - name: Install Dependencies (Frontend)
+        run: npm install
+        working-directory: frontend  # Adjust this if the Angular project is in a subdirectory
+
+      - name: Build Frontend
+        run: npm run build
+        working-directory: frontend
+
+      # Combine Frontend and Backend (if deploying together)
+      - name: Move Frontend Build to Backend
+        run: cp -R frontend/dist/dari-front/* backend/src/main/resources/static
+
+      # Run Tests
+      - name: Run Backend Tests
+        run: mvn test
+
+      # Optional: Deploy to Server (Add your deployment steps here)

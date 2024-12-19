@@ -80,17 +80,9 @@ body {
   align-items: center;
 }
 
-.pie {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: conic-gradient(
-    #4caf50 0% 50%, /* Living Room - Green */
-    #ff9800 50% 75%, /* Kitchen - Orange */
-    #2196f3 75% 100% /* Room 2 - Blue */
-  );
-  position: relative;
-}
+
+
+
 
 
 
