@@ -79,7 +79,7 @@ export class DashboardComponent implements OnInit {
 
   // Assign colors to rooms in a cyclic manner
   getRandomColor(index: number): string {
-    const colors = ['#FF5733', '#33FF57', '#3357FF', '#FFFF33', '#FF33FF'];
+    const colors = ['#4caf50', '#ff9800', '#2196f3', '#FFFF33', '#FF33FF'];
     return colors[index % colors.length];
   }
 
