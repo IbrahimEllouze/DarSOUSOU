@@ -6,11 +6,13 @@ export interface Home {
 }
 
 export interface Room {
+  [x: string]: any;
   id: number;
   name: string;
   devices: Device[];
   isEditingName?: boolean;   
-  newRoomName?: string;  
+  newRoomName?: string; 
+  consumption?: number; 
 }
 
 export interface Device {

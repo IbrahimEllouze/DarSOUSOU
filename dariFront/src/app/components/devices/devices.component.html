@@ -70,7 +70,13 @@
     <div *ngIf="connectedDevices.length === 0" class="no-devices-message">
       <p>No connected devices found.</p>
     </div>
-  
+    <div class="search-bar">
+      <form [formGroup]="searchForm" (ngSubmit)="onSearchDevices()">
+        <input type="text" formControlName="search" placeholder="Search devices by name..." />
+        <button type="submit" mat-button>Search</button>
+      </form>
+    </div>
+    
     <div *ngIf="connectedDevices.length > 0">
       <div *ngFor="let device of connectedDevices" class="device-item">
         <div class="device-info">

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
@@ -17,7 +17,8 @@ import { RoomComponent } from './components/room/room.component';
 import { DeviceComponent } from './components/devices/devices.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { StoreComponent } from './components/store/store.component';
-
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'index', component: IndexComponent },
@@ -42,6 +43,7 @@ const routes: Routes = [
     DeviceComponent, 
     DashboardComponent, 
     StoreComponent,
+    
   ],
   imports: [
     ReactiveFormsModule,
@@ -53,9 +55,12 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     MatDialogModule, 
     MatSnackBarModule,
+    NgxChartsModule
   ],
+  schemas: [NO_ERRORS_SCHEMA],
   providers: [
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch()),
+    provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]
 })

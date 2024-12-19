@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HomeService } from '../../services/home.service';
 import { Device, Room } from '../../models/home.model';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-energy-dashboard',
   standalone: false,
@@ -13,10 +13,10 @@ export class DashboardComponent implements OnInit {
   devices: Device[] = [];
   totalDevices = 5; // Example to randomly generate devices if not fetched from the API.
 
-  constructor(private homeService: HomeService) {}
+  constructor(private homeService: HomeService, private router: Router) {}
 
   ngOnInit(): void {
-    const userId = 1; // Example user ID
+    const userId = this.extractUserIdFromUrl();
     
     // Fetch rooms
     this.homeService.getRoomsByUserId(userId).subscribe({
@@ -30,6 +30,7 @@ export class DashboardComponent implements OnInit {
       
       
     });
+    
     
     // Fetch devices for the first room if available
     this.homeService.getDevicesByRoom(userId, 1).subscribe({
@@ -45,7 +46,11 @@ export class DashboardComponent implements OnInit {
         console.error('Failed to fetch devices:', err);
         this.devices = this.generateDummyDevices(); // Fallback to dummy devices if fetch fails
       }
+      
     });
+  }
+  private extractUserIdFromUrl(): number {
+    return +this.router.url.split('/')[2]; 
   }
 
   // Generate random consumption values
@@ -79,7 +84,9 @@ export class DashboardComponent implements OnInit {
   }
 
   // Calculate percentage for rooms
-  getRoomPercentage(): number {
-    return this.rooms.length > 0 ? Math.round(100 / this.rooms.length) : 0;
+  getRoomPercentage(room: any): number {
+    const total = this.rooms.reduce((acc, curr) => acc + curr['value'], 0);
+    return Math.round((room.value / total) * 100); // Calculate percentage for each room
   }
+
 }

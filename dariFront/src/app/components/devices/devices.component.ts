@@ -17,6 +17,8 @@ export class DeviceComponent implements OnInit {
   roomForm: FormGroup;
   availableRooms: Room[] = [];
   selectedRoomId: number | null = null;
+  searchForm: FormGroup;
+  searchQuery: string = '';
 
   constructor(
     private deviceService: DeviceService,
@@ -26,6 +28,10 @@ export class DeviceComponent implements OnInit {
   ) {
     this.roomForm = this.fb.group({
       roomId: [''],
+    });
+
+    this.searchForm = this.fb.group({
+      search: [''],
     });
   }
 
@@ -88,5 +94,22 @@ export class DeviceComponent implements OnInit {
   getRoomName(roomId: number): string {
     const room = this.availableRooms.find((r) => r.id === roomId);
     return room ? room.name : 'Unknown Room';
+  }
+
+  // Search devices by name
+  onSearchDevices(): void {
+    this.searchQuery = this.searchForm.get('search')?.value.trim().toLowerCase() || '';
+    if (this.searchQuery) {
+      this.deviceService.getConnectedDevices(this.userId).subscribe(
+        (devices) => {
+          this.connectedDevices = devices.filter(device =>
+            device.name.toLowerCase().includes(this.searchQuery)
+          );
+        },
+        (error) => console.error('Error fetching devices:', error)
+      );
+    } else {
+      this.loadConnectedDevices(); // Reset if search query is empty
+    }
   }
 }
