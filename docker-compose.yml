@@ -1,21 +1,69 @@
+version: '3.8'
+
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root  # Add a root password for security
+      MYSQL_DATABASE: smarth
+      # Remove MYSQL_USER and MYSQL_PASSWORD since you're using root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin1
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
   backend:
     build:
       context: ./dari
+      dockerfile: Dockerfile
+    container_name: spring-backend
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/smarth
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      mysql:
+        condition: service_healthy
     networks:
       - app-network
 
   frontend:
     build:
       context: ./dariFront
+      dockerfile: Dockerfile
+    container_name: angular-frontend
     ports:
-      - "4200:80"
+      - "80:80"
+    depends_on:
+      - backend
     networks:
       - app-network
+
+volumes:
+  mysql_data:
 
 networks:
   app-network:

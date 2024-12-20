@@ -1,30 +1,38 @@
-# Stage 1: Build the Angular app
-FROM node:18 as builder
+# Build stage
+FROM node:18 as build
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json and install dependencies
-COPY package.json package-lock.json ./
-RUN npm install
+# Copy package files
+COPY package*.json ./
 
-# Copy all application files
+# Install dependencies with legacy-peer-deps flag
+RUN npm install --legacy-peer-deps
+
+# Install Angular CLI globally
+RUN npm install -g @angular/cli
+
+# Install specific dependencies
+RUN npm install --legacy-peer-deps \
+    @angular/material \
+    @angular/cdk \
+    @angular/animations
+
+# Copy project files
 COPY . .
 
-# Build the Angular application in production mode
-RUN npm run build --prod
+# Build the app for production
+RUN ng build --configuration=production
 
-# Stage 2: Serve the Angular app with NGINX
+# Production stage
 FROM nginx:alpine
 
-# Remove the default NGINX configuration
-RUN rm -rf /usr/share/nginx/html/*
+# Copy built files from build stage
+COPY --from=build /app/dist/dari-front/* /usr/share/nginx/html/
 
-# Copy the Angular build artifacts to the NGINX serving directory
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
 EXPOSE 80
 
-# Start NGINX server
 CMD ["nginx", "-g", "daemon off;"]

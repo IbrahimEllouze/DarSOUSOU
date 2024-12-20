@@ -1,16 +1,14 @@
-# Use OpenJDK image
 FROM openjdk:17-jdk-slim
 
-# Set working directory
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml
+# Copy Maven files
+COPY mvnw .
 COPY .mvn .mvn
-COPY mvnw mvnw
-COPY pom.xml pom.xml
+COPY pom.xml .
 
-# Ensure Maven wrapper script is executable
-RUN chmod +x mvnw
+# Make mvnw executable and download dependencies
+RUN chmod +x mvnw && ./mvnw dependency:go-offline
 
 # Copy source code
 COPY src src
@@ -18,8 +16,6 @@ COPY src src
 # Build the application
 RUN ./mvnw package -DskipTests
 
-# Expose port
-EXPOSE 8080
-
-# Start the application
-ENTRYPOINT ["java", "-jar", "target/*.jar"]
+# Run the application
+# Change this line to use the actual JAR file name
+ENTRYPOINT ["java", "-jar", "target/dari-0.0.1-SNAPSHOT.jar"]
