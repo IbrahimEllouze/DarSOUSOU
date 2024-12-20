@@ -1,13 +1,14 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core'; 
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { AppRoutingModule } from './app-routing.module';  // Import AppRoutingModule
+
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
@@ -18,19 +19,7 @@ import { DeviceComponent } from './components/devices/devices.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { StoreComponent } from './components/store/store.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
-const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'index', component: IndexComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'homes/:userId/rooms', component: HomeComponent },
-  { path: 'homes/:userId/rooms/:roomId/devices', component: RoomComponent },
-  { path: 'users/:userId/devices/connected', component: DeviceComponent },
-  { path: '', redirectTo: '/index', pathMatch: 'full' },
-  { path: 'users/:userId/dashboard', component: DashboardComponent },
-  { path: 'users/:userId/store', component: StoreComponent },
-
-];
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -43,19 +32,18 @@ const routes: Routes = [
     DeviceComponent, 
     DashboardComponent, 
     StoreComponent,
-    
   ],
   imports: [
+    BrowserModule,
+    AppRoutingModule,  // Add AppRoutingModule here
     ReactiveFormsModule,
     MatFormFieldModule,
+    BrowserAnimationsModule,
     MatSelectModule,
     MatOptionModule,
-    BrowserModule,
     FormsModule,
-    RouterModule.forRoot(routes),
     MatDialogModule, 
     MatSnackBarModule,
-    NgxChartsModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [
