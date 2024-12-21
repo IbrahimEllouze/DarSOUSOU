@@ -51,6 +51,9 @@ throw new Error('Method not implemented.');
   enterDasboard(): void {
     this.router.navigate([`/users/${this.userId}/dashboard`]);
   }
+  enterStore(): void {
+    this.router.navigate([`/users/${this.userId}/store`]);
+  }
   // Handle real-time updates when editing
   onHomeNameInput(event: Event): void {
     const target = event.target as HTMLElement;
